@@ -30,4 +30,3 @@ Please refer to `examples/WikiCS` for a detailed example of MI estimation for a 
 
 #### 4. Contact
 Please send me an email at "ankithmo@usc.edu" for any queries regarding this package.
-[Ankith Mohan](mailto:ankithmo@usc.edu?subject=[GitHub]%20estimateMI)
