@@ -29,5 +29,5 @@ The following code snippet shows how I(X:T_1) is estimated.
 Please refer to `examples/WikiCS` for a detailed example of MI estimation for a neural network and a graph neural network.
 
 #### 4. Contact
-Please send me an email at `ankithmo@usc.edu` for any queries regarding this package.
-[Ankith Mohan](mailto:ankithmo@usc.edu?subject=[GitHub]%20estimateMI)`
+Please send me an email at "ankithmo@usc.edu" for any queries regarding this package.
+[Ankith Mohan](mailto:ankithmo@usc.edu?subject=[GitHub]%20estimateMI)
