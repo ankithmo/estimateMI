@@ -9,14 +9,12 @@ here = osp.abspath(osp.dirname(__file__))
 parent = osp.abspath(osp.dirname(here))
 sys.path.insert(0, parent)
 sys.path.insert(1, here)
-from version import __version__
 
 # Get the long description from the README file
 with open(osp.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='estimateMI',
-      version=__version__,
       description='Estimating differential entropy using Gaussian convolution',
       url='https://github.com/ankithmo/estimateMI',
       author='Ankith Mohan',

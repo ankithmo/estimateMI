@@ -1,9 +1,18 @@
 
 torch
-torchvision
+scikit-learn
+
 numpy
 scipy
-tqdm
-scikit-learn
 pandas
 matplotlib
+
+tqdm
+
+torch-scatter
+torch-sparse
+torch-cluster
+torch-spline
+torch-geometric
+
+bokeh

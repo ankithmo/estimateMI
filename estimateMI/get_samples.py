@@ -3,48 +3,53 @@ import torch
 
 from tqdm import tqdm
 
-def get_samples(model, x, edge_index=None, dataset=None):
+def get_samples(model, x, edge_index=None, train_idx=None):
     """
         Get samples from the DNN
 
-        Args:
-            - model: DNN model
-            - x (num_examples, num_features): Datapoints
-            - edge_index (2, num_edges): Edge index
-            - dataset (str): Which dataset should the MI be estimated for?
-                            Possible values: train, val, test
+            Parameters:
+                model: DNN that returns the following:
+                    - Representations learnt by the final neural network layer
+                    - Class predictions
+                    - List consisting of the representations learnt before being passed into AWGN channels
+                x : torch.tensor of shape (num_examples, num_features)
+                    Input tensor
+                edge_index : torch.tensor of shape (2, num_edges), optional
+                    Edge index
+                train_idx : torch.tensor of shape (num_nodes), optional
+                    Tensor indicating which nodes are part of the training set
 
-        Returns:
-            - Us: Dictionary of layer-wise unconditional samples
-            - Cs: Dictionary of layer-wise conditional samples
+            Returns:
+                Us: dictionary
+                    layer-wise unconditional samples
+                Cs: dictionary
+                    layer-wise conditional samples
     """
     Us, Cs = {}, {}
-
-    assert dataset in ["train", "val", "test"], 
-        ValueError(f"Expected `dataset` to be in [train, val, test], got {dataset} instead.")
-
-    total = x.size(0) if dataset is None else x[dataset].size(0)
+    total = x.size(0)
 
     model.eval()
     with torch.no_grad():
         print("Unconditional sampling...")
-        _, uS = model(x) if edge_index is None else model(x, edge_index) 
+        _, _, uS = model(x) if edge_index is None else model(x, edge_index) 
         for i in range(len(uS)):
-            Us[i] = uS[i] if dataset is None else uS[i][dataset]
+            Us[i] = uS[i] if train_idx is None else uS[i][train_idx]
         print("Done")
 
         print("Conditional sampling...")
         with tqdm(total=total) as pbar:
             for j in range(total):
-                pbar.set_description(f"Conditional samples given x_{j}")
-                _, cS = model(x) if edge_index is None else model(x, edge_index)
+                pbar.set_description(f"Conditional samples given x_{j+1}")
+                _, _, cS = model(x) if edge_index is None else model(x, edge_index)
                 for i in range(len(cS)):
-                  Cs[i] = cS[i] if dataset is None else cS[i][dataset]
+                    if i not in Cs:
+                        Cs[i] = [cS[i] if train_idx is None else cS[i][train_idx]]
+                    else:
+                        Cs[i].append(cS[i])
             pbar.update(1)
         pbar.close()
         for i in range(len(Cs)):
             Cs[i] = torch.stack(Cs[i], axis=1)
-            assert Cs[i].size() == (total, total, Cs[i].size(1))
         print("Done")
 
     return Us, Cs
