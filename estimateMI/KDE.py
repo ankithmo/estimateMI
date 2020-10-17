@@ -84,7 +84,7 @@ class KDE(object):
                                      n_jobs=self.n_jobs, cv=5, verbose=0)
             print("Done!")
 
-            print("\nFitting data...", end="")
+            print("Fitting data...", end="")
             hyper_kde.fit(X)
             self.bandwidth = hyper_kde.best_estimator_.bandwidth
             self.model = hyper_kde.best_estimator_
