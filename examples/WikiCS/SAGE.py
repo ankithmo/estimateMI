@@ -41,7 +41,7 @@ class SAGE(nn.Module):
             Returns:
 
         """
-        super(MLP, self).__init__()
+        super(SAGE, self).__init__()
 
         # Linear layers
         self.NN_1 = SAGEConv(num_in, num_hid)

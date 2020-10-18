@@ -61,17 +61,12 @@ def wikics(method, device, num_hid, lr, dropout, num_epochs, mask, beta, n_MC,
     data = dataset[0]
     X = data.x.to(device)
     y = data.y.to(device)
+    edge_index = data.edge_index.to(device)
 
     # Get splits
     train_idx = data.train_mask[:, mask]
     val_idx = data.val_mask[:, mask]
     test_idx = data.test_mask
-
-    # Get nodes
-    nodes = torch.from_numpy(np.arange(data.num_nodes))
-    train_nodes = nodes[train_idx]
-    val_nodes = nodes[val_idx]
-    test_nodes = nodes[test_idx]
 
     # AWGN channel
     Z = lambda n, sigma: mvn.MultivariateNormal(torch.zeros(n), 
