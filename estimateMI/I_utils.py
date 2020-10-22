@@ -22,8 +22,9 @@ def fit_and_log_lik(S_n, kde, Z, device, n_g=None):
                     Log likelihood of S_n + Z
     """
     # Pick n_g samples from S_n (if required)
-    S_n_g = S_n[torch.randperm(S_n.size(0)).tolist()[:n_g],:] if n_g is None else S_n
-    assert S_n_g.size() == (n_g, S_n.size(1))
+    S_n_g = S_n if n_g is None else S_n[torch.randperm(S_n.size(0)).tolist()[:n_g],:]
+    assert S_n_g.size() == (n_g, S_n.size(1)), \
+    ValueError(f"Expected tensor of shape ({n_g}, {S_n.size(1)}), got {S_n_g.size()} instead.")
 
     # Fit KDE on n_g samples
     kde.train(S_n_g, device)
@@ -74,7 +75,8 @@ def estimate_h(S_n, Z, n_MC, kde, device, n_g, uncon):
             log_g_list.append(fit_and_log_lik(S_n, kde, Z, device, n_g))
 
     log_g_list = torch.cat(log_g_list, axis=1)
-    assert log_g_list.shape == (S_n.size(0), n_MC)
+    assert log_g_list.shape == (S_n.size(0), n_MC), \
+    ValueError(f"Expected array of shape ({S_n.size(0)}, {n_MC}), got {log_g_list.shape} instead.")
   
     hat_Q = -torch.mean(log_g_list, axis=1)
     return torch.mean(hat_Q)
